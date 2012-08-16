@@ -6,8 +6,8 @@
       (cond ((null (eq (elt strs i) del))
 	     (setq buffer (concatenate 'string buffer (string (elt strs i)))))
 	    (t (setq res (cons buffer res)) (setq buffer ""))))
-    (cond ((eq buffer "") res)
-	  (t (cons buffer res)))))
+    (cond ((eq buffer "") (reverse res))
+	  (t (reverse (cons buffer res))))))
 ; 順列を生成
 (defun make-permutation(num-set)
   (let ((perm-list nil))

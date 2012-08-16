@@ -1,39 +1,37 @@
 (load "util.l")
-(setf str (read-line))
-(setf alpha "abcdefghijklmnopqrstuvwxyz")
-;; 文字列をasciiリストに変換
-(defun str-to-ascii-list(str)
-  (let ((lt nil))
-    (dotimes (i (length str))
-      (push (char-code (char str i)) lt))
-    (return-from str-to-ascii-list (reverse lt))))
-(defun proc(keys)
-  (let ((keyList nil))
+;; 入力を受け取って,を消去してリストにしそれぞれ数字へ変換
+(setf *ascii-list* (mapcar #'parse-integer (split (read-line) #\,)))
+;; stringにcharListを変換
+(defun charList-to-string(charList)
+  (let ((my-string (make-array 0
+			      :element-type 'character
+			      :fill-pointer 0
+			      :adjustable t)))
+    (dolist (ch charList)
+      (vector-push-extend ch my-string))
+    (return-from charList-to-string my-string)))
+;; keyListで複合
+(defun decode(keys)
+  (let ((keyList nil) (res nil))
     (do ((i 0 (1+ i)))
-	((>= i (length str)))
+	((>= i (length *ascii-list*)))
       (push (char-code (elt keys (mod i 3))) keyList))
     (setf keyList (reverse keyList))
-    (setf ascii-list (str-to-ascii-list str))
-    ;;(print (reduce #'+ (mapcar #'logxor keylist ascii-list)))))
-    (print (mapcar #'code-char (mapcar #'logxor keylist ascii-list)))))
-;;(print alpha)
-;;(print (list-length (split str #\,)))
-(do ((i 0 (1+ i)))
-    ((>= i (length alpha)))
-  (do ((j 0 (1+ j)))
-      ((>= j (length alpha)))
-    (do ((k 0 (1+ k)))
-	((>= k (length alpha)))
-      ;;(print `(,(char alpha i) ,(char alpha j) ,(char alpha k)))
-      (proc `(,(char alpha i) ,(char alpha j) ,(char alpha k))))))
-;;(print (char alpha i)))
-
-
-
-    
-    ;; ascii-listとkeyListでxor
-    ;;(print keyList)
-    ;; ここでkeyListとstrの各文字を比較してxor演算を取る
-    ;; 結果の和をとって表示
-(proc '(#\a #\b #\c))
-;;(print (str-to-list "abcde"))
+    (setf res (charList-to-string (mapcar #'code-char (mapcar #'logxor keyList *ascii-list*))))
+    (cond ((null (equal nil (search "accept" res)))
+	   (print res)
+	   (print (reduce #'+ (mapcar #'logxor keyList *ascii-list*)))
+	   (return-from decode t)
+	   ))) nil)
+(setf alpha "abcdefghijklmnopqrstuvwxyz")
+;; main処理
+(defun main()
+  (do ((i 0 (1+ i)))
+      ((>= i (length alpha)))
+    (do ((j 0 (1+ j)))
+	((>= j (length alpha)))
+      (do ((k 0 (1+ k)))
+	  ((>= k (length alpha)))
+	(cond ((decode `(,(char alpha i) ,(char alpha j) ,(char alpha k))) (return-from main)))))))
+(main)
+;; (cond ((decode `(,(char alpha i) ,(char alpha j) ,(char alpha k))) (return-from main)))))))
