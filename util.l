@@ -39,6 +39,7 @@
      (dolist (x n)
        (cond ((null (eq prv x)) (push x res) (setq prv x)))) res))
 ;; 素数リストを返す
+;; eratosthenesの篩を使用
 (defun make-prime-list(n)
   (let ((is-prime (make-array (1+ n) :initial-element t))
 	(prime-list nil))
@@ -69,4 +70,14 @@
   (do ((i 2 (1+ i)))
       ((> (* i i) n) (return-from check-prime t))
     (cond ((zerop (mod n i)) (return-from check-prime nil)))))
+;; リストからn要素からなる組みを列挙
+(defun make-combination(n lt)
+  (cond ((or (zerop n)
+	     (null lt)) nil)
+	((equal n 1)
+	 (mapcar (lambda (res) (list res)) lt))
+	(t
+	 (append
+	  (make-combination n (cdr lt))
+	  (mapcar (lambda (res) (cons (car lt) res)) (make-combination (1- n) (cdr lt)))))))
 
