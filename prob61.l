@@ -1,5 +1,3 @@
-;; too slow!!
-
 (load "util.l")
 (setf *dp* (make-array (expt 2 6) 100))
 (setf *kind* (make-array 10001 :initial-element -1))
@@ -21,6 +19,9 @@
 (initialize-kind (lambda (i) (* i (1- (* 2 i)))) 3)
 (initialize-kind (lambda (i) (/ 2 (* i (- (* 5 i) 3))) 4)
 (initialize-kind (lambda (i) (* i (- (* 3 i) 2))) 5)
+
+;; (ash 1 3)‚Å1‚ð3bit shift
+
 
 ;; (defun dfs(mask prv)
 ;;   t)
